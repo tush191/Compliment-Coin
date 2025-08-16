@@ -202,7 +202,7 @@ contract ComplimentCoin is ERC20, Ownable, ReentrancyGuard {
         }
         
         if (offset >= count || limit == 0) {
-            return new Compliment[](0);
+            return new Compliment ;
         }
         
         uint256 resultSize = (offset + limit > count) ? count - offset : limit;
@@ -248,7 +248,7 @@ contract ComplimentCoin is ERC20, Ownable, ReentrancyGuard {
         }
         
         if (offset >= count || limit == 0) {
-            return new Compliment[](0);
+            return new Compliment ;
         }
         
         uint256 resultSize = (offset + limit > count) ? count - offset : limit;
@@ -274,184 +274,5 @@ contract ComplimentCoin is ERC20, Ownable, ReentrancyGuard {
      * @dev Get recent compliments
      * @param limit Number of compliments to return
      */
-    function getRecentCompliments(uint256 limit) external view returns (Compliment[] memory) {
-        require(limit <= 50, "Limit too high");
-        
-        uint256 totalCompliments = _complimentIds.current();
-        uint256 resultSize = (totalCompliments < limit) ? totalCompliments : limit;
-        
-        Compliment[] memory result = new Compliment[](resultSize);
-        uint256 resultIndex = 0;
-        
-        for (uint256 i = totalCompliments; i >= 1 && resultIndex < resultSize; i--) {
-            if (compliments[i].isActive) {
-                result[resultIndex] = compliments[i];
-                resultIndex++;
-            }
-        }
-        
-        return result;
-    }
-    
-    /**
-     * @dev Update user reputation (internal function)
-     */
-    function _updateReputation(address user, uint256 points) internal {
-        userStats[user].reputation += points;
-        emit ReputationUpdated(user, userStats[user].reputation);
-    }
-    
-    /**
-     * @dev Get user statistics
-     * @param user Address of the user
-     */
-    function getUserStats(address user) external view returns (UserStats memory) {
-        return userStats[user];
-    }
-    
-    /**
-     * @dev Get total number of compliments
-     */
-    function getTotalCompliments() external view returns (uint256) {
-        return _complimentIds.current();
-    }
-    
-    // Moderation functions (only owner or moderators)
-    
-    modifier onlyModerator() {
-        require(
-            msg.sender == owner() || userStats[msg.sender].isModerator,
-            "Not authorized"
-        );
-        _;
-    }
-    
-    /**
-     * @dev Add moderator
-     * @param moderator Address to add as moderator
-     */
-    function addModerator(address moderator) external onlyOwner {
-        userStats[moderator].isModerator = true;
-        emit ModeratorAdded(moderator);
-    }
-    
-    /**
-     * @dev Remove moderator
-     * @param moderator Address to remove as moderator
-     */
-    function removeModerator(address moderator) external onlyOwner {
-        userStats[moderator].isModerator = false;
-        emit ModeratorRemoved(moderator);
-    }
-    
-    /**
-     * @dev Blacklist a user
-     * @param user Address to blacklist
-     */
-    function blacklistUser(address user) external onlyModerator {
-        blacklistedUsers[user] = true;
-        emit UserBlacklisted(user);
-    }
-    
-    /**
-     * @dev Remove user from blacklist
-     * @param user Address to whitelist
-     */
-    function whitelistUser(address user) external onlyModerator {
-        blacklistedUsers[user] = false;
-        emit UserWhitelisted(user);
-    }
-    
-    /**
-     * @dev Deactivate inappropriate compliment
-     * @param complimentId ID of compliment to deactivate
-     */
-    function deactivateCompliment(uint256 complimentId) external onlyModerator {
-        require(compliments[complimentId].id != 0, "Compliment does not exist");
-        compliments[complimentId].isActive = false;
-    }
-    
-    /**
-     * @dev Emergency mint function (only owner)
-     * @param to Address to mint tokens to
-     * @param amount Amount of tokens to mint
-     */
-    function emergencyMint(address to, uint256 amount) external onlyOwner {
-        require(totalSupply() + amount <= MAX_SUPPLY, "Would exceed max supply");
-        _mint(to, amount);
-    }
-    
-    /**
-     * @dev Burn tokens
-     * @param amount Amount of tokens to burn
-     */
-    function burn(uint256 amount) external {
-        _burn(msg.sender, amount);
-    }
-    
-    /**
-     * @dev Burn tokens from account (with allowance)
-     * @param account Account to burn tokens from
-     * @param amount Amount of tokens to burn
-     */
-    function burnFrom(address account, uint256 amount) external {
-        _spendAllowance(account, msg.sender, amount);
-        _burn(account, amount);
-    }
-}
-
-// Additional utility contract for compliment analytics
-contract ComplimentAnalytics {
-    ComplimentCoin public immutable complimentCoin;
-    
-    struct Analytics {
-        uint256 totalCompliments;
-        uint256 totalUsers;
-        uint256 avgComplimentsPerUser;
-        uint256 topReputation;
-        address topUser;
-    }
-    
-    constructor(address _complimentCoin) {
-        complimentCoin = ComplimentCoin(_complimentCoin);
-    }
-    
-    /**
-     * @dev Get platform analytics
-     */
-    function getPlatformAnalytics() external view returns (Analytics memory) {
-        uint256 totalCompliments = complimentCoin.getTotalCompliments();
-        
-        // This is a simplified version - in practice, you'd need to track active users
-        Analytics memory analytics = Analytics({
-            totalCompliments: totalCompliments,
-            totalUsers: 0, // Would need additional tracking
-            avgComplimentsPerUser: 0,
-            topReputation: 0,
-            topUser: address(0)
-        });
-        
-        return analytics;
-    }
-}
-
-// Deployment script information:
-/*
-Deployment Instructions:
-1. Install dependencies: npm install @openzeppelin/contracts
-2. Compile: npx hardhat compile
-3. Deploy: npx hardhat run scripts/deploy.js --network <network>
-
-Testing suggestions:
-- Test compliment giving and receiving
-- Test daily limits and anti-spam features
-- Test moderation functions
-- Test token economics and max supply
-- Test user statistics and reputation system
-
-Frontend Integration:
-- Use ethers.js or web3.js to interact with the contract
-- Create UI for giving compliments, viewing history, and user stats
-- Implement real-time updates using contract events
-- Add social features like compliment feeds and user profiles
-*/
+    function get
+/*Added one function suggested by ChatGPT */
